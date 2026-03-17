@@ -8,11 +8,14 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install
 RUN pip install uv
 RUN uv tool install notebooklm-mcp-cli
 
+# ★ここがポイント：npxのバグを避けるため、supergatewayを直接インストール
+RUN npm install -g supergateway
+
 # パスを通す
 ENV PATH="/root/.local/bin:${PATH}"
 
-# 起動用のシェルスクリプトを作成
-RUN echo '#!/bin/bash\nnpx -y supergateway --sse --port ${PORT:-3000} -- nlm mcp' > /start.sh
+# printfコマンドを使って、文字化けや改行エラーが起きないよう確実にスクリプトを作成
+RUN printf '#!/bin/bash\nsupergateway --sse --port "${PORT:-3000}" -- nlm mcp\n' > /start.sh
 RUN chmod +x /start.sh
 
 # 作成したスクリプトを実行
