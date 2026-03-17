@@ -12,4 +12,4 @@ RUN uv tool install notebooklm-mcp-cli
 ENV PATH="/root/.local/bin:${PATH}"
 
 # Railwayが動的に割り当てるPORT環境変数を使用してsupergatewayを起動
-CMD npx -y supergateway --port $PORT --sse -- nlm mcp
+CMD sh -c "npx -y supergateway --sse --port ${PORT:-3000} -- nlm mcp"
