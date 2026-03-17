@@ -8,13 +8,12 @@ RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - && apt-get install
 RUN pip install uv
 RUN uv tool install notebooklm-mcp-cli
 
-# MCPをSSE化するブリッジツールを公式パッケージ名で確実にインストール
-RUN npm install -g @smithery/supergateway
+# ★修正：正しいパッケージ名「supergateway」をインストール
+RUN npm install -g supergateway
 
 # パスと環境変数の設定
 ENV PATH="/root/.local/bin:${PATH}"
 ENV HOST="0.0.0.0"
-ENV PORT=3000
 
-# ★ 一切の細工なし。シンプルにコマンドを実行
-CMD ["sh", "-c", "supergateway --stdio --port $PORT -- nlm mcp"]
+# シンプルかつ確実に起動させるコマンド
+CMD sh -c "supergateway --stdio \"nlm mcp\" --port ${PORT:-3000}"
