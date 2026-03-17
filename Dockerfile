@@ -14,8 +14,11 @@ RUN npm install -g supergateway
 # パスを通す
 ENV PATH="/root/.local/bin:${PATH}"
 
-# ★修正ポイント：--stdioフラグを使って "nlm mcp" をSSEサーバー化する
-RUN printf '#!/bin/bash\nsupergateway --stdio "nlm mcp" --port "${PORT:-3000}"\n' > /start.sh
+# ★ポイント1: クラウド環境向けに受付窓口を「外線(0.0.0.0)」に固定
+ENV HOST="0.0.0.0"
+
+# ★ポイント2: "nlm mcp" をコマンドと引数として正しく分離（-- nlm mcp）
+RUN printf '#!/bin/bash\nsupergateway --port "${PORT:-3000}" --stdio -- nlm mcp\n' > /start.sh
 RUN chmod +x /start.sh
 
 # 作成したスクリプトを実行
